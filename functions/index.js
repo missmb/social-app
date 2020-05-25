@@ -15,17 +15,20 @@ exports.getScreams = functions.https.onRequest((req, res) => {
     .firestore()
     .collection('screams')
     .get()
-    .then(data => {
+    .then((data) => {
         let screams = [];
         data.forEach((doc) => {
             screams.push(doc.data());
         });
         return res.json(screams);
     })
-    .catch(err => console.log(err));
+    .catch((err) => console.error(err));
 });
 
 exports.createScream = functions.https.onRequest((req, res) => {
+    if (req.method !== 'POST') {
+        return res.status(400).json({ error : 'Method not allowed'});
+    }
     const newScream = {
         body : req.body.body,
         userHandle : req.body.userHandle,
